@@ -27,7 +27,7 @@ object Part1 {
 
 object Part2 {
     fun countIncrease(input: List<Int>): Int =
-        Part1.countIncrease(buildTriples(input).map { it.sum()  })
+        Part1.countIncrease(buildTriples(input).map { it.sum() })
 
     private fun buildTriples(input: List<Int>): List<Triple> {
         val lastFirst = input.size - 3

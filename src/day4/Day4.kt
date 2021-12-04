@@ -8,7 +8,7 @@ fun main() {
     val boards = input
         .asSequence()
         .drop(1)
-        .map { line -> line.split(" ").filter { it.isNotBlank() }.map { it.toInt() }}
+        .map { line -> line.split(" ").filter { it.isNotBlank() }.map { it.toInt() } }
         .map { line -> Row(line.map { Tile(it) }) }
         .chunked(5)
         .map { Board(it) }
@@ -34,15 +34,17 @@ class Game2(private val boards: List<Board>, private val numbers: List<Int>) {
     fun play(): Int {
         for (number in numbers) {
             boards.mark(number)
-            boards.forEach {
-                val score = it.score(number)
-                if (score > 0 && !it.winner) {
-                    it.winner = true
-                    if (boards.all { board -> board.winner }) {
-                        return score
+            boards
+                .filter { !it.winner }
+                .forEach {
+                    val score = it.score(number)
+                    if (score > 0) {
+                        it.winner = true
+                        if (boards.all { board -> board.winner }) {
+                            return score
+                        }
                     }
                 }
-            }
         }
         return 0
     }

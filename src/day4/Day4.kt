@@ -48,8 +48,6 @@ class Game2(private val boards: List<Board>, private val numbers: List<Int>) {
     }
 }
 
-fun List<Board>.mark(number: Int) = this.forEach { it.mark(number) }
-
 // "winner" attribute is only needed for Part2
 class Board(private val rows: List<Row>, var winner: Boolean = false) {
     private val sumUnmarked: Int
@@ -69,6 +67,19 @@ class Board(private val rows: List<Row>, var winner: Boolean = false) {
     private fun filledColumn(): Row? = rows.toColumns().filled()
 }
 
+fun List<Board>.mark(number: Int) = this.forEach { it.mark(number) }
+
+class Row(val tiles: List<Tile>) {
+    val sumUnmarked: Int
+        get() = tiles.filter { !it.marked }.sumOf { it.value }
+
+    fun mark(number: Int) {
+        tiles.filter { it.value == number }.forEach { it.mark() }
+    }
+
+    fun isFilled() = tiles.all { it.marked }
+}
+
 fun List<Row>.filled() = this.firstOrNull { it.isFilled() }
 
 fun List<Row>.toColumns(): List<Row> {
@@ -85,19 +96,9 @@ fun List<Row>.toColumns(): List<Row> {
     return columns
 }
 
-class Row(val tiles: List<Tile>) {
-    val sumUnmarked: Int
-        get() = tiles.filter { !it.marked }.sumOf { it.value }
-
-    fun mark(number: Int) {
-        tiles.filter { it.value == number }.forEach { it.mark() }
-    }
-
-    fun isFilled() = tiles.all { it.marked }
-}
-
 class Tile(val value: Int, var marked: Boolean = false) {
     fun mark() {
         marked = true
     }
 }
+

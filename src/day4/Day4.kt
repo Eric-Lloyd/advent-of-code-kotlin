@@ -60,13 +60,11 @@ class Board(private val rows: List<Row>, var winner: Boolean = false) {
     }
 
     fun score(number: Int): Int {
-        filledRow()?.let { return (sumUnmarked) * number }
-        filledColumn()?.let { return (sumUnmarked) * number }
+        rows.firstFilled()?.let { return (sumUnmarked) * number }
+        rows.toColumns().firstFilled()?.let { return (sumUnmarked) * number }
         return 0
     }
 
-    private fun filledRow(): Row? = rows.filled()
-    private fun filledColumn(): Row? = rows.toColumns().filled()
 }
 
 fun List<Board>.mark(number: Int) = this.forEach { it.mark(number) }
@@ -82,7 +80,7 @@ class Row(val tiles: List<Tile>) {
     fun isFilled() = tiles.all { it.marked }
 }
 
-fun List<Row>.filled() = this.firstOrNull { it.isFilled() }
+fun List<Row>.firstFilled() = this.firstOrNull { it.isFilled() }
 
 fun List<Row>.toColumns(): List<Row> {
     val columns = mutableListOf<Row>()

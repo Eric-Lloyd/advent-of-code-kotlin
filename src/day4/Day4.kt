@@ -14,7 +14,7 @@ fun main() {
         .map { Board(it) }
         .toList()
     val result1 = Game1(boards, numbers).play()
-    val result2 = Game2(boards as MutableList<Board>, numbers).play()
+    val result2 = Game2(boards, numbers).play()
     println(result1)
     println(result2)
 }
@@ -30,14 +30,14 @@ class Game1(private val boards: List<Board>, private val numbers: List<Int>) {
     }
 }
 
-class Game2(private val boards: MutableList<Board>, private val numbers: List<Int>) {
+class Game2(private val boards: List<Board>, private val numbers: List<Int>) {
     fun play(): Int {
         for (number in numbers) {
             boards.mark(number)
             boards.forEach {
                 val score = it.score(number)
                 if (score > 0 && !it.winner) {
-                    it.wins()
+                    it.winner = true
                     if (boards.all { board -> board.winner }) {
                         return score
                     }
@@ -50,16 +50,13 @@ class Game2(private val boards: MutableList<Board>, private val numbers: List<In
 
 fun List<Board>.mark(number: Int) = this.forEach { it.mark(number) }
 
+// "winner" attribute is only needed for Part2
 class Board(private val rows: List<Row>, var winner: Boolean = false) {
     private val sumUnmarked: Int
         get() = rows.sumOf { it.sumUnmarked }
 
     fun mark(number: Int) {
         rows.forEach { it.mark(number) }
-    }
-
-    fun wins() {
-        winner = true
     }
 
     fun score(number: Int): Int {

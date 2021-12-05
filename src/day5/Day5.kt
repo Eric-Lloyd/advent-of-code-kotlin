@@ -12,31 +12,26 @@ fun main() {
     println(count2)
 }
 
-fun count(lines: List<Line>, predicate: (Line) -> Boolean): Int {
-    val filteredLines = lines.filter { predicate(it) }
-    return overlappingPoints(filteredLines, 2)
+fun count(lines: List<Line>, filter: (Line) -> Boolean): Int {
+    return overlappingPoints(lines.filter { filter(it) }, 2)
 }
 
-fun overlappingPoints(lines: List<Line>, threshold: Int) : Int {
+fun overlappingPoints(lines: List<Line>, threshold: Int): Int {
     val counts = mutableMapOf<Point, Int>()
     for (line in lines) {
-        val points = line.points()
-        for (point in points) {
-            if (counts.containsKey(point)) {
-                counts[point] = counts[point]!! + 1
-            } else {
-                counts[point] = 1
-            }
+        for (point in line.points()) {
+            counts[point] = (counts[point] ?: 0) + 1
         }
     }
     return counts.count { (_, count) -> count >= threshold }
 }
+
 data class Point(val x: Int, val y: Int)
 
 data class Line(val from: Point, val to: Point) {
-    val isHorizontal : Boolean = from.y == to.y
-    val isVertical : Boolean = from.x == to.x
-    val isDiagonal : Boolean = abs(from.x - to.x) == abs(from.y - to.y)
+    val isHorizontal: Boolean = from.y == to.y
+    val isVertical: Boolean = from.x == to.x
+    val isDiagonal: Boolean = abs(from.x - to.x) == abs(from.y - to.y)
 
     /*
      * returns all the points along the line.
@@ -81,16 +76,15 @@ data class Line(val from: Point, val to: Point) {
     }
 }
 
-fun direction(a1: Int, a2: Int) : (Int) -> Int {
+fun direction(a1: Int, a2: Int): (Int) -> Int {
     if (a1 > a2) return { a -> a - 1 } else return { a -> a + 1 }
 }
 
-fun lineFrom(line: String): Line {
-    val (from, to) = line
-        .split(" -> ")
+fun lineFrom(line: String) =
+    line.split(" -> ")
         .map { subLine ->
-            val (x, y) = subLine.split(",").map { it.toInt() }
-            Point(x, y)
+            subLine.split(",")
+                .map { it.toInt() }
+                .let { (x, y) -> Point(x, y) }
         }
-    return Line(from, to)
-}
+        .let { (from, to) -> Line(from, to) }

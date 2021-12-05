@@ -16,15 +16,9 @@ fun count(lines: List<Line>, filter: (Line) -> Boolean): Int {
     return overlappingPoints(lines.filter { filter(it) }, 2)
 }
 
-fun overlappingPoints(lines: List<Line>, threshold: Int): Int {
-    val counts = mutableMapOf<Point, Int>()
-    for (line in lines) {
-        for (point in line.points()) {
-            counts[point] = (counts[point] ?: 0) + 1
-        }
-    }
-    return counts.count { (_, count) -> count >= threshold }
-}
+fun overlappingPoints(lines: List<Line>, threshold: Int) =
+    lines.flatMap { it.points() }.groupBy { it }.count { it.value.size >= threshold }
+
 
 data class Point(val x: Int, val y: Int)
 

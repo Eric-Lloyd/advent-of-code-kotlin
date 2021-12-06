@@ -4,8 +4,10 @@ import readInput
 
 fun main() {
     val initial = readInput("day6/Day6")[0].split(",").map { it.toInt() }
-    val count = Fish(initial).countAfter(256)
-    println(count)
+    val count1 = Fish(initial).countAfter(80)
+    val count2 = Fish(initial).countAfter(256)
+    println(count1)
+    println(count2)
 }
 
 

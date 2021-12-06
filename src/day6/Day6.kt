@@ -15,9 +15,7 @@ class Fish(initial: List<Int>) {
     private var fishMap: Map<Int, Long> = initial.groupingBy { it }.eachCount() as Map<Int, Long>
 
     fun countAfter(days: Int): Long {
-        for (i in 0 until days) {
-            update()
-        }
+        repeat(days) { update() }
         return fishMap.map { it.value }.sum()
     }
 

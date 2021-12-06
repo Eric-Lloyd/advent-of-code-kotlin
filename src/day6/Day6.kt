@@ -21,11 +21,11 @@ class Fish(initial: List<Int>) {
 
     private fun update() {
         val updatedFishMap = mutableMapOf<Int, Long>()
-        for (fish in 0 until 9) {
-            when (fish) {
-                6 -> updatedFishMap[fish] = fishMap.value(7) + fishMap.value(0)
-                8 -> updatedFishMap[fish] = fishMap.value(0)
-                else -> updatedFishMap[fish] = fishMap.value(fish + 1)
+        for (timer in 0 until 9) {
+            when (timer) {
+                6 -> updatedFishMap[timer] = fishMap.value(7) + fishMap.value(0)
+                8 -> updatedFishMap[timer] = fishMap.value(0)
+                else -> updatedFishMap[timer] = fishMap.value(timer + 1)
             }
         }
         fishMap = updatedFishMap

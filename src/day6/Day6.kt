@@ -16,7 +16,7 @@ class Fish(initial: List<Int>) {
 
     fun countAfter(days: Int): Long {
         repeat(days) { update() }
-        return fishMap.map { it.value }.sum()
+        return fishMap.values.sum()
     }
 
     private fun update() {

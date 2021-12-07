@@ -5,10 +5,10 @@ import kotlin.math.abs
 
 fun main() {
     val input = readInput("day7/Day7")[0].split(",").map { it.toInt() }
-    val count1 = findMinimalMoves(input) { n -> n }
-    val count1v2 = findMinimalMovesV2(input) { n -> n }
-    val count2 = findMinimalMoves(input) { n -> sumConsecutiveNumbers(n) }
-    val count2v2 = findMinimalMovesV2(input) { n -> sumConsecutiveNumbers(n) }
+    val count1 = minimalMovesCount(input) { n -> n }
+    val count1v2 = minimalMovesCountIdiomatic(input) { n -> n }
+    val count2 = minimalMovesCount(input) { n -> sumConsecutiveNumbers(n) }
+    val count2v2 = minimalMovesCountIdiomatic(input) { n -> sumConsecutiveNumbers(n) }
     println(count1)
     println(count1v2)
     println(count2)
@@ -17,7 +17,7 @@ fun main() {
 
 fun sumConsecutiveNumbers(n: Int) = ((n * (n + 1)) / 2) // starting at 1
 
-fun findMinimalMoves(positions: List<Int>, cost: (Int) -> Int): Int {
+fun minimalMovesCount(positions: List<Int>, cost: (Int) -> Int): Int {
     val min = positions.minOrZero()
     val max = positions.maxOrZero()
     val counts = mutableListOf<Int>()
@@ -29,10 +29,10 @@ fun findMinimalMoves(positions: List<Int>, cost: (Int) -> Int): Int {
         }
         counts.add(count)
     }
-    return counts.minOrNull() ?: 0
+    return counts.minOrZero()
 }
 
-fun findMinimalMovesV2(positions: List<Int>, cost: (Int) -> Int): Int {
+fun minimalMovesCountIdiomatic(positions: List<Int>, cost: (Int) -> Int): Int {
     return (positions.minOrZero()..positions.maxOrZero())
         .map { index ->
             positions.map { position -> cost(abs(position - index)) }.sum()

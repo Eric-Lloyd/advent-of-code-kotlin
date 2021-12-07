@@ -15,7 +15,7 @@ fun main() {
     println(count2v2)
 }
 
-fun sumConsecutiveNumbers(n: Int) = ((n * (n + 1)) / 2) // starting at 1
+fun sumConsecutiveNumbers(n: Int) = (n * (n + 1)) / 2 // starting at 1
 
 fun minimalMovesCount(positions: List<Int>, cost: (Int) -> Int): Int {
     val min = positions.minOrZero()
@@ -35,7 +35,7 @@ fun minimalMovesCount(positions: List<Int>, cost: (Int) -> Int): Int {
 fun minimalMovesCountIdiomatic(positions: List<Int>, cost: (Int) -> Int): Int {
     return (positions.minOrZero()..positions.maxOrZero())
         .map { index ->
-            positions.map { position -> cost(abs(position - index)) }.sum()
+            positions.sumOf { position -> cost(abs(position - index)) }
         }.minOrZero()
 }
 

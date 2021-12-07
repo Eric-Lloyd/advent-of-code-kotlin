@@ -5,31 +5,38 @@ import kotlin.math.abs
 
 fun main() {
     val input = readInput("day7/Day7")[0].split(",").map { it.toInt() }
-    val count1 = Part1.findMinimalMoves(input)
-    val count2 = Part2.findMinimalMoves(input) { diff -> ((diff * (diff + 1)) / 2).toLong() }
+    val count1 = findMinimalMoves(input) { n -> n }
+    val count1v2 = findMinimalMovesV2(input) { n -> n }
+    val count2 = findMinimalMoves(input) { n -> sumConsecutiveNumbers(n) }
+    val count2v2 = findMinimalMovesV2(input) { n -> sumConsecutiveNumbers(n) }
     println(count1)
+    println(count1v2)
     println(count2)
+    println(count2v2)
 }
 
-object Part1 {
-    fun findMinimalMoves(positions: List<Int>) =
-        Part2.findMinimalMoves(positions) { diff -> diff.toLong() }
-}
+fun sumConsecutiveNumbers(n: Int) = ((n * (n + 1)) / 2) // starting at 1
 
-object Part2 {
-    fun findMinimalMoves(positions: List<Int>, cost: (Int) -> Long): Long {
-        val sortedPositions = positions.sorted()
-        val min = sortedPositions.first()
-        val max = sortedPositions.last()
-        val counts = mutableListOf<Long>()
-        for (i in min..max) {
-            var count = 0L
-            for (position in sortedPositions) {
-                val diff = abs(position - i)
-                count += cost(diff)
-            }
-            counts.add(count)
+fun findMinimalMoves(positions: List<Int>, cost: (Int) -> Int): Int {
+    val sortedPositions = positions.sorted()
+    val min = sortedPositions.first()
+    val max = sortedPositions.last()
+    val counts = mutableListOf<Int>()
+    for (index in min..max) {
+        var count = 0
+        for (position in sortedPositions) {
+            val diff = abs(position - index)
+            count += cost(diff)
         }
-        return counts.minOrNull() ?: 0L
+        counts.add(count)
     }
+    return counts.minOrNull() ?: 0
+}
+
+fun findMinimalMovesV2(positions: List<Int>, cost: (Int) -> Int): Int {
+    val sortedPositions = positions.sorted()
+    return (sortedPositions.first()..sortedPositions.last())
+        .map { index ->
+            sortedPositions.map { position -> cost(abs(position - index)) }.sum()
+        }.minOrNull() ?: 0
 }

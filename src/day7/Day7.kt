@@ -18,13 +18,12 @@ fun main() {
 fun sumConsecutiveNumbers(n: Int) = ((n * (n + 1)) / 2) // starting at 1
 
 fun findMinimalMoves(positions: List<Int>, cost: (Int) -> Int): Int {
-    val sortedPositions = positions.sorted()
-    val min = sortedPositions.first()
-    val max = sortedPositions.last()
+    val min = positions.minOrZero()
+    val max = positions.maxOrZero()
     val counts = mutableListOf<Int>()
     for (index in min..max) {
         var count = 0
-        for (position in sortedPositions) {
+        for (position in positions) {
             val diff = abs(position - index)
             count += cost(diff)
         }
@@ -34,9 +33,11 @@ fun findMinimalMoves(positions: List<Int>, cost: (Int) -> Int): Int {
 }
 
 fun findMinimalMovesV2(positions: List<Int>, cost: (Int) -> Int): Int {
-    val sortedPositions = positions.sorted()
-    return (sortedPositions.first()..sortedPositions.last())
+    return (positions.minOrZero()..positions.maxOrZero())
         .map { index ->
-            sortedPositions.map { position -> cost(abs(position - index)) }.sum()
+            positions.map { position -> cost(abs(position - index)) }.sum()
         }.minOrNull() ?: 0
 }
+
+fun List<Int>.minOrZero() = this.minOrNull() ?: 0
+fun List<Int>.maxOrZero() = this.maxOrNull() ?: 0

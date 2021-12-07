@@ -36,7 +36,7 @@ fun findMinimalMovesV2(positions: List<Int>, cost: (Int) -> Int): Int {
     return (positions.minOrZero()..positions.maxOrZero())
         .map { index ->
             positions.map { position -> cost(abs(position - index)) }.sum()
-        }.minOrNull() ?: 0
+        }.minOrZero()
 }
 
 fun List<Int>.minOrZero() = this.minOrNull() ?: 0

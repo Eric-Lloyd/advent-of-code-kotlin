@@ -38,6 +38,7 @@ fun findBasins(matrix: List<List<Int>>): List<Set<BasinSpot>> {
     val basins = mutableListOf<MutableSet<BasinSpot>>()
     val n = matrix[0].size
     val m = matrix.size
+    // build initial basins from low points
     for (j in 0 until m) {
         for (i in 0 until n) {
             val curr = matrix[j][i]
@@ -56,7 +57,9 @@ fun findBasins(matrix: List<List<Int>>): List<Set<BasinSpot>> {
             }
         }
     }
+
     var allHandled = basins.flatten().allHandled()
+    // extends basins from not handled spots
     while (!allHandled) {
         for (basin in basins) {
             val spotsToAdd = mutableSetOf<BasinSpot>()
@@ -84,10 +87,12 @@ fun findBasins(matrix: List<List<Int>>): List<Set<BasinSpot>> {
 const val MAX_VALUE = 9
 
 data class BasinSpot(val value: Int, val i: Int, val j: Int, var handled: Boolean = false) {
+    // ignore 'handled' in hashcode
     override fun hashCode(): Int {
         return Objects.hash(value, i, j)
     }
 
+    // ignore 'handled' in equals
     override fun equals(other: Any?) =
         (other is BasinSpot)
                 && value == other.value

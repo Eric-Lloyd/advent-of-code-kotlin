@@ -50,11 +50,11 @@ fun findBasins(matrix: List<List<Int>>): List<Set<BasinSpot>> {
             val bottom = if (j < m - 1) matrix[j + 1][i] else MAX_VALUE
             if (curr < left && curr < right && curr < top && curr < bottom) {
                 val basin = mutableSetOf<BasinSpot>()
-                basin.add(BasinSpot(curr, i, j, true))
-                if (left != MAX_VALUE) basin.add(BasinSpot(left, i - 1, j, false))
-                if (right != MAX_VALUE) basin.add(BasinSpot(right, i + 1, j, false))
-                if (top != MAX_VALUE) basin.add(BasinSpot(top, i, j - 1, false))
-                if (bottom != MAX_VALUE) basin.add(BasinSpot(bottom, i, j + 1, false))
+                basin.add(BasinSpot(i, j, true))
+                if (left != MAX_VALUE) basin.add(BasinSpot(i - 1, j, false))
+                if (right != MAX_VALUE) basin.add(BasinSpot(i + 1, j, false))
+                if (top != MAX_VALUE) basin.add(BasinSpot(i, j - 1, false))
+                if (bottom != MAX_VALUE) basin.add(BasinSpot(i, j + 1, false))
                 basins.add(basin)
             }
         }
@@ -67,15 +67,15 @@ fun findBasins(matrix: List<List<Int>>): List<Set<BasinSpot>> {
             val spotsToAdd = mutableSetOf<BasinSpot>()
             for (spot in basin) {
                 if (!spot.handled) {
-                    val (_, i, j, _) = spot
+                    val (i, j) = spot
                     val left = if (i > 0) matrix[j][i - 1] else MAX_VALUE
                     val right = if (i < n - 1) matrix[j][i + 1] else MAX_VALUE
                     val top = if (j > 0) matrix[j - 1][i] else MAX_VALUE
                     val bottom = if (j < m - 1) matrix[j + 1][i] else MAX_VALUE
-                    if (left != MAX_VALUE) spotsToAdd.add(BasinSpot(left, i - 1, j, false))
-                    if (right != MAX_VALUE) spotsToAdd.add(BasinSpot(right, i + 1, j, false))
-                    if (top != MAX_VALUE) spotsToAdd.add(BasinSpot(top, i, j - 1, false))
-                    if (bottom != MAX_VALUE) spotsToAdd.add(BasinSpot(bottom, i, j + 1, false))
+                    if (left != MAX_VALUE) spotsToAdd.add(BasinSpot(i - 1, j, false))
+                    if (right != MAX_VALUE) spotsToAdd.add(BasinSpot(i + 1, j, false))
+                    if (top != MAX_VALUE) spotsToAdd.add(BasinSpot(i, j - 1, false))
+                    if (bottom != MAX_VALUE) spotsToAdd.add(BasinSpot(i, j + 1, false))
                     spot.handled = true
                 }
             }
@@ -85,16 +85,16 @@ fun findBasins(matrix: List<List<Int>>): List<Set<BasinSpot>> {
     }
     return basins
 }
-data class BasinSpot(val value: Int, val i: Int, val j: Int, var handled: Boolean = false) {
+
+data class BasinSpot(val i: Int, val j: Int, var handled: Boolean = false) {
     // ignore 'handled' in hashcode
     override fun hashCode(): Int {
-        return Objects.hash(value, i, j)
+        return Objects.hash(i, j)
     }
 
     // ignore 'handled' in equals
     override fun equals(other: Any?) =
         (other is BasinSpot)
-                && value == other.value
                 && i == other.i
                 && j == other.j
 }

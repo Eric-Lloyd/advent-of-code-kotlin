@@ -14,7 +14,8 @@ fun main() {
     println(illegalCharacterSum)
 
     // part 2
-    val completionsMedian = processedLines.filterIsInstance<IncompleteLine>()
+    val completionsMedian = processedLines
+        .filterIsInstance<IncompleteLine>()
         .map { it.completions.fold(0L) { acc, char -> acc * 5 + COMPLETION_CHARACTER_POINTS[char]!! } }
         .median()
     println(completionsMedian)

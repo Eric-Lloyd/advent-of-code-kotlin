@@ -3,63 +3,47 @@ package day10
 import readInput
 
 fun main() {
-    val input = readInput("day10/Day10").map { it.toCharArray() }
-    val illegalCharacterSum = firstIllegalCharacters(input)
-        .sumOf { ILLEGAL_CHARACTER_POINTS[it] ?: 0 }
+    val processedLines = readInput("day10/Day10")
+        .map { it.toCharArray() }
+        .map { processLine(it) }
+
+    // part 1
+    val illegalCharacterSum = processedLines
+        .filterIsInstance<IllegalLine>()
+        .sumOf { ILLEGAL_CHARACTER_POINTS[it.firstIllegal] ?: 0 }
     println(illegalCharacterSum)
-    val completionsMedian = incompleteLinesCompletion(input)
-        .map { it.fold(0L) { acc, char -> acc * 5 + COMPLETION_CHARACTER_POINTS[char]!! } }
+
+    // part 2
+    val completionsMedian = processedLines.filterIsInstance<IncompleteLine>()
+        .map { it.completions.fold(0L) { acc, char -> acc * 5 + COMPLETION_CHARACTER_POINTS[char]!! } }
         .median()
     println(completionsMedian)
 }
 
-fun firstIllegalCharacters(lines: List<CharArray>): List<Char> {
-    val result = mutableListOf<Char>()
-    for (line in lines) {
-        val openingCharacterStack = ArrayDeque<Char>()
-        for (char in line) {
-            when (char) {
-                in OPENING_CHARACTER_PAIRS.keys -> {
-                    openingCharacterStack.addLast(char)
-                }
-                in CLOSING_CHARACTER_PAIRS.keys -> {
-                    val last = openingCharacterStack.removeLast()
-                    if (CLOSING_CHARACTER_PAIRS[char] != last) {
-                        result.add(char)
-                        break
-                    }
-                }
-                else -> throw IllegalArgumentException("Illegal character in input: ${char}.")
+fun processLine(line: CharArray): ProcessedLine {
+    val openingCharacterStack = ArrayDeque<Char>()
+    for (char in line) {
+        when (char) {
+            in OPENING_CHARACTER_PAIRS.keys -> {
+                openingCharacterStack.addLast(char)
             }
+            in CLOSING_CHARACTER_PAIRS.keys -> {
+                val last = openingCharacterStack.removeLast()
+                if (CLOSING_CHARACTER_PAIRS[char] != last) {
+                    return IllegalLine(char)
+                }
+            }
+            else -> throw IllegalArgumentException("Illegal character in input: ${char}.")
         }
     }
-    return result
+    val lineCompletion = openingCharacterStack.mapNotNull { OPENING_CHARACTER_PAIRS[it] }.reversed()
+    return if (lineCompletion.isNotEmpty()) IncompleteLine(lineCompletion) else CompletedLine
 }
 
-fun incompleteLinesCompletion(lines: List<CharArray>): List<List<Char>> {
-    val result = mutableListOf<List<Char>>()
-    for (line in lines) {
-        val openingCharacterStack = ArrayDeque<Char>()
-        for (char in line) {
-            when (char) {
-                in OPENING_CHARACTER_PAIRS.keys -> {
-                    openingCharacterStack.addLast(char)
-                }
-                in CLOSING_CHARACTER_PAIRS.keys -> {
-                    val last = openingCharacterStack.removeLast()
-                    if (CLOSING_CHARACTER_PAIRS[char] != last) {
-                        openingCharacterStack.clear()
-                        break
-                    }
-                }
-                else -> throw IllegalArgumentException("Illegal character in input: ${char}.")
-            }
-        }
-        val lineCompletion = openingCharacterStack.mapNotNull { OPENING_CHARACTER_PAIRS[it] }.reversed()
-        if (lineCompletion.isNotEmpty()) result.add(lineCompletion)
-    }
-    return result
-}
+sealed class ProcessedLine
+data class IllegalLine(val firstIllegal: Char) : ProcessedLine()
+data class IncompleteLine(val completions: List<Char>) : ProcessedLine()
+object CompletedLine : ProcessedLine()
 
 fun List<Long>.median() = this.sorted().let {
     if (it.size % 2 == 0)

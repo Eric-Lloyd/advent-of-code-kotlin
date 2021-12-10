@@ -38,13 +38,13 @@ fun processLine(line: CharArray): ProcessedLine {
         }
     }
     val lineCompletion = openingCharacterStack.mapNotNull { OPENING_CHARACTER_PAIRS[it] }.reversed()
-    return if (lineCompletion.isNotEmpty()) IncompleteLine(lineCompletion) else CompletedLine
+    return if (lineCompletion.isNotEmpty()) IncompleteLine(lineCompletion) else CompleteLine
 }
 
 sealed class ProcessedLine
 data class IllegalLine(val firstIllegal: Char) : ProcessedLine()
 data class IncompleteLine(val completions: List<Char>) : ProcessedLine()
-object CompletedLine : ProcessedLine()
+object CompleteLine : ProcessedLine()
 
 fun List<Long>.median() = this.sorted().let {
     if (it.size % 2 == 0)

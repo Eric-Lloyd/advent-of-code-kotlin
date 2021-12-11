@@ -7,8 +7,13 @@ fun main() {
         .map { line -> line.split("").mapNotNull { runCatching { it.toInt() }.getOrNull() } }
 
     val counts = countFlashesAfterEachStepUntil(input) { step, flashCount -> step >= 100 && flashCount == 100 }
-    val part1 = counts.filter { it.key <= 100 }.map { it.value }.sum()
-    val part2 = counts.filter { it.value == 100 }.firstNotNullOf { it.key }
+    val part1 = counts
+        .filter { (step, _) -> step <= 100 }
+        .map { (_, flashCount) -> flashCount }
+        .sum()
+    val part2 = counts
+        .filter { (_, flashCount) -> flashCount == 100 }
+        .firstNotNullOf { (step, _) -> step }
     println(part1)
     println(part2)
 }

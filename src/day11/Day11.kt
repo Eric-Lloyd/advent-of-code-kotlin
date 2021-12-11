@@ -4,7 +4,7 @@ import readInput
 
 fun main() {
     val input = readInput("day11/Day11")
-        .map { line -> line.split("").mapNotNull { runCatching { it.toInt() }.getOrNull() } }
+        .map { line -> line.toList().map { it.toString().toInt() } }
 
     val counts = countFlashesAfterEachStepUntil(input) { step, flashCount -> step >= 100 && flashCount == 100 }
     val part1 = counts
@@ -23,10 +23,12 @@ fun countFlashesAfterEachStepUntil(input: List<List<Int>>, predicate: (Int, Int)
     var currStep = 1
     var currFlashCount = 0
     val result = mutableMapOf<Int, Int>()
+
     while (!predicate(currStep, currFlashCount)) {
         val m = matrix.size
         val n = matrix[0].size
         val zeros = mutableListOf<ZeroPoint>()
+
         // increment all points and find initial zeros
         for (j in 0 until m) {
             for (i in 0 until n) {
@@ -45,18 +47,19 @@ fun countFlashesAfterEachStepUntil(input: List<List<Int>>, predicate: (Int, Int)
         var allZerosHandled = zeros.isEmpty()
         while (!allZerosHandled) {
             val zerosToAdd = mutableListOf<ZeroPoint>()
-            zeros.filter { !it.handled }.forEach {
-                val neighbours = it.point.neighbours(matrix)
-                neighbours.filter { neighbour -> neighbour.value != 0 }.forEach { neighbour ->
-                    when (neighbour.value) {
-                        9 -> {
-                            neighbour.value = 0
-                            zerosToAdd.add(ZeroPoint(neighbour))
+            zeros.filter { !it.handled }.forEach { zero ->
+                zero.point.neighbours(matrix)
+                    .filter { neighbour -> neighbour.value != 0 }
+                    .forEach { neighbour ->
+                        when (neighbour.value) {
+                            9 -> {
+                                neighbour.value = 0
+                                zerosToAdd.add(ZeroPoint(neighbour))
+                            }
+                            else -> neighbour.value += 1
                         }
-                        else -> neighbour.value += 1
                     }
-                }
-                it.handled = true
+                zero.handled = true
             }
             zeros.addAll(zerosToAdd)
             allZerosHandled = zeros.all { it.handled }
@@ -83,6 +86,7 @@ private fun initialPointMatrix(input: List<List<Int>>): List<List<Point>> {
     return result
 }
 
+class ZeroPoint(val point: Point, var handled: Boolean = false)
 data class Point(var value: Int, val i: Int, val j: Int)
 
 fun Point.neighbours(matrix: List<List<Point>>): List<Point> {
@@ -99,5 +103,3 @@ fun Point.neighbours(matrix: List<List<Point>>): List<Point> {
     val bottomRight = if (j < m - 1 && i < n - 1) matrix[j + 1][i + 1] else null
     return listOf(top, left, right, bottom, topLeft, topRight, bottomLeft, bottomRight).mapNotNull { it }
 }
-
-class ZeroPoint(val point: Point, var handled: Boolean = false)

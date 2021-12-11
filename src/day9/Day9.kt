@@ -7,7 +7,7 @@ const val MAX_VALUE = 9
 
 fun main() {
     val input = readInput("day9/Day9")
-        .map { line -> line.split("").mapNotNull { runCatching { it.toInt() }.getOrNull() } }
+        .map { line -> line.toList().map { it.toString().toInt() } }
     val lowPointSum = findLowPoints(input).sumOf { it.value + 1 }
     println(lowPointSum)
     val largerBasinsProduct = findBasins(input)

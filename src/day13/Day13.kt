@@ -10,12 +10,7 @@ fun main() {
         .map { line -> line.split(",").map { it.toInt() }.let { (x, y) -> Pair(x, y) } }
 
     val folds = input.subList(emptyLineIndex + 1, input.size)
-        .map {
-            it
-                .replace("fold along ", "")
-                .split("=")
-                .let { (axis, value) -> Pair(axisFrom(axis), value.toInt()) }
-        }
+        .map { line -> line.replace("fold along ", "").split("=").let { (axis, value) -> Pair(axisFrom(axis), value.toInt()) } }
 
     folds.fold(buildInitialMatrix(coordinates)) { acc, (axis, value) ->
         acc.foldOn(axis, value).also { println(it.count()) }

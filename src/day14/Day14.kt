@@ -12,9 +12,12 @@ fun main() {
 
     val matcher = Matcher(rules)
     val polymers = buildPolymers(template, matcher, 40)
-    val letterCounts = letterCounts(template[0], polymers)
+    val sortedCounts = letterCounts(template[0], polymers)
+        .toList()
+        .sortedBy { it.second }
+        .map { it.second }
 
-    val result = letterCounts.maxOf { it.value } - letterCounts.minOf { it.value }
+    val result = sortedCounts.last() - sortedCounts.first()
     println(result)
 }
 

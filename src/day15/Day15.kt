@@ -5,18 +5,25 @@ import readInput
 fun main() {
     val matrix = readInput("day15/Day15")
         .map { line -> line.toList().map { char -> char.toString().toInt() } }
+
+    // part 1
     val n = matrix[0].size
     val m = matrix.size
+    val source = Vertex(0, 0)
+    val destination = Vertex(n - 1, m - 1)
 
     val graph1 = Graph.from(matrix)
-    val cost1 = dijkstraShortestPathCost(graph1, Vertex(0, 0), Vertex(n - 1, m - 1))
+    val cost1 = dijkstraShortestPathCost(graph1, source, destination)
     println(cost1)
 
+    // part 2
     val matrix2 = explode(matrix, 5)
     val n2 = matrix2[0].size
     val m2 = matrix2.size
+    val destination2 = Vertex(n2 - 1, m2 - 1)
+
     val graph2 = Graph.from(matrix2)
-    val cost2 = dijkstraShortestPathCost(graph2, Vertex(0, 0), Vertex(n2 - 1, m2 - 1))
+    val cost2 = dijkstraShortestPathCost(graph2, source, destination2)
     println(cost2)
 }
 
@@ -81,10 +88,6 @@ data class Graph(val vertices: Set<Vertex>, val edges: List<Edge>) {
             return Graph(vertices.toSet(), edges.toList())
         }
     }
-
-    override fun toString() =
-        """Graph(vertices=(${vertices.map { vertex -> "\n\t$vertex" }})), edges=(${edges.map { edge -> "\n\t$edge" }}))
-        """
 }
 
 fun explode(matrix: List<List<Int>>, steps: Int): List<List<Int>> {

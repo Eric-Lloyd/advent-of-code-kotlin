@@ -3,7 +3,7 @@ package day15
 import readInput
 
 fun main() {
-    val matrix = readInput("day15/Day15Example")
+    val matrix = readInput("day15/Day15")
         .map { line -> line.toList().map { char -> char.toString().toInt() } }
     val n = matrix[0].size
     val m = matrix.size
@@ -22,7 +22,7 @@ fun main() {
 
 fun dijkstraShortestPathCost(graph: Graph, source: Vertex, destination: Vertex): Int {
     val adjacencyList = graph.adjacencyList
-    val queue = mutableListOf(source)
+    val queue = mutableSetOf(source)
     val minDistances = graph.vertices.fold(mutableMapOf<Vertex, Int>()) { acc, vertex ->
         acc[vertex] = Int.MAX_VALUE
         acc
@@ -30,7 +30,8 @@ fun dijkstraShortestPathCost(graph: Graph, source: Vertex, destination: Vertex):
     minDistances[source] = 0
 
     while (queue.isNotEmpty()) {
-        val current = queue.removeLast()
+        val current = queue.minByOrNull { minDistances[it]!! }!!
+        queue.remove(current)
         for (neighbour in adjacencyList[current]?.let { it.keys } ?: emptySet()) {
             val newDistance = minDistances[current]!! + adjacencyList[current]!![neighbour]!!
             if (newDistance < minDistances[neighbour]!!) {
@@ -67,10 +68,14 @@ data class Graph(val vertices: Set<Vertex>, val edges: List<Edge>) {
                 for (i in 0 until n) {
                     val vertex = Vertex(i, j)
                     vertices.add(vertex)
-                    val edge1 = if (i < n - 1) Edge(vertex, Vertex(i + 1, j), matrix[j][i + 1]) else null
-                    val edge2 = if (j < m - 1) Edge(vertex, Vertex(i, j + 1), matrix[j + 1][i]) else null
-                    edge1?.also { edge -> edges.add(edge) }
-                    edge2?.also { edge -> edges.add(edge) }
+                    if (i < n - 1)
+                        edges.add(Edge(vertex, Vertex(i + 1, j), matrix[j][i + 1]))
+                    if (j < m - 1)
+                        edges.add(Edge(vertex, Vertex(i, j + 1), matrix[j + 1][i]))
+                    if (i > 0)
+                        edges.add(Edge(vertex, Vertex(i - 1, j), matrix[j][i - 1]))
+                    if (j > 0)
+                        edges.add(Edge(vertex, Vertex(i, j - 1), matrix[j - 1][i]))
                 }
             }
             return Graph(vertices.toSet(), edges.toList())

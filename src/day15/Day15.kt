@@ -3,7 +3,7 @@ package day15
 import readInput
 
 fun main() {
-    val matrix = readInput("day15/Day15")
+    val matrix = readInput("day15/Day15Example")
         .map { line -> line.toList().map { char -> char.toString().toInt() } }
     val n = matrix[0].size
     val m = matrix.size
@@ -12,9 +12,9 @@ fun main() {
     val cost1 = dijkstraShortestPathCost(graph1, Vertex(0, 0), Vertex(n - 1, m - 1))
     println(cost1)
 
-    val matrix2 = explode(matrix)
-    val n2 = matrix[0].size
-    val m2 = matrix.size
+    val matrix2 = explode(matrix, 5)
+    val n2 = matrix2[0].size
+    val m2 = matrix2.size
     val graph2 = Graph.from(matrix2)
     val cost2 = dijkstraShortestPathCost(graph2, Vertex(0, 0), Vertex(n2 - 1, m2 - 1))
     println(cost2)
@@ -28,24 +28,19 @@ fun dijkstraShortestPathCost(graph: Graph, source: Vertex, destination: Vertex):
         acc
     }
     minDistances[source] = 0
-    val predecessor = mutableMapOf<Vertex, Vertex>()
 
     while (queue.isNotEmpty()) {
         val current = queue.removeLast()
         for (neighbour in adjacencyList[current]?.let { it.keys } ?: emptySet()) {
             val newDistance = minDistances[current]!! + adjacencyList[current]!![neighbour]!!
-
             if (newDistance < minDistances[neighbour]!!) {
                 minDistances[neighbour] = minOf(minDistances[neighbour]!!, newDistance)
                 queue.add(neighbour)
-                predecessor[neighbour] = current
             }
         }
     }
     return minDistances[destination]!!
 }
-
-fun explode(matrix: List<List<Int>>) = matrix
 
 data class Vertex(val i: Int, val j: Int)
 data class Edge(val from: Vertex, val to: Vertex, val cost: Int)
@@ -85,4 +80,43 @@ data class Graph(val vertices: Set<Vertex>, val edges: List<Edge>) {
     override fun toString() =
         """Graph(vertices=(${vertices.map { vertex -> "\n\t$vertex" }})), edges=(${edges.map { edge -> "\n\t$edge" }}))
         """
+}
+
+fun explode(matrix: List<List<Int>>, steps: Int): List<List<Int>> {
+    val down = incrementDown(matrix, steps)
+    val result = down as MutableList<MutableList<Int>>
+    var curr = down
+    repeat(steps - 1) {
+        val next = increment(curr)
+        for (i in 0 until result.size) {
+            result[i].addAll(next[i])
+        }
+        curr = next
+    }
+    return result
+}
+
+private fun incrementDown(matrix: List<List<Int>>, steps: Int): List<List<Int>> {
+    val result = mutableListOf<List<Int>>()
+    var curr = matrix
+    result.addAll(curr)
+    repeat(steps - 1) {
+        val next = increment(curr)
+        result.addAll(next)
+        curr = next
+    }
+    return result
+}
+
+private fun increment(matrix: List<List<Int>>): List<List<Int>> {
+    val n = matrix[0].size
+    val m = matrix.size
+    val result = MutableList(m) { MutableList(n) { 0 } }
+    for (j in 0 until m) {
+        for (i in 0 until n) {
+            val curr = matrix[j][i]
+            result[j][i] = if (matrix[j][i] == 9) 1 else curr + 1
+        }
+    }
+    return result
 }

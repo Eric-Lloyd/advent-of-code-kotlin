@@ -1,9 +1,9 @@
 package day10
 
-import readInput
+import java.io.File
 
 fun main() {
-    val processedLines = readInput("day10/Day10")
+    val processedLines = File("src", "day10/Day10.txt").readLines()
         .map { it.toCharArray() }
         .map { processLine(it) }
 

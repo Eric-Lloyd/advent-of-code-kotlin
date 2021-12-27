@@ -1,9 +1,9 @@
 package day2
 
-import readInput
+import java.io.File
 
 fun main() {
-    val commands = readInput("day2/Day2")
+    val commands = File("src", "day2/Day2.txt").readLines()
         .map {
             val line = it.split(" ")
             Command(Type.valueOf(line[0].uppercase()), line[1].toInt())

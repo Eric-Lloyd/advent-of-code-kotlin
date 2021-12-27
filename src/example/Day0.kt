@@ -1,13 +1,13 @@
 package example
 
-import readInput
+import java.io.File
 
 fun main() {
     fun part1(input: List<String>): Int {
         return input.size
     }
 
-    val input = readInput("example/Day0")
+    val input = File("src", "${"example/Day0"}.txt").readLines()
     println(part1(input))
 }
 

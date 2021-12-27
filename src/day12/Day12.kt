@@ -1,10 +1,10 @@
 package day12
 
-import readInput
+import java.io.File
 
 
 fun main() {
-    val edges = readInput("day12/Day12")
+    val edges = File("src", "day12/Day12.txt").readLines()
         .map { it.split('-').let { (from, to) -> CaveEdge(Pair(CaveVertex(from), CaveVertex(to))) } }
     val graph = Graph.from(edges)
     val source = CaveVertex.start()

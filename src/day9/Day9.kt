@@ -1,12 +1,12 @@
 package day9
 
-import readInput
+import java.io.File
 import java.util.Objects
 
 const val MAX_VALUE = 9
 
 fun main() {
-    val input = readInput("day9/Day9")
+    val input = File("src", "day9/Day9.txt").readLines()
         .map { line -> line.toList().map { it.toString().toInt() } }
     val lowPointSum = findLowPoints(input).sumOf { it.value + 1 }
     println(lowPointSum)

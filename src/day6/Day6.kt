@@ -1,9 +1,9 @@
 package day6
 
-import readInput
+import java.io.File
 
 fun main() {
-    val initial = readInput("day6/Day6")[0].split(",").map { it.toInt() }
+    val initial = File("src", "day6/Day6.txt").readLines()[0].split(",").map { it.toInt() }
     val count1 = Fish(initial).countAfter(80)
     val count2 = Fish(initial).countAfter(256)
     println(count1)
@@ -32,4 +32,4 @@ class Fish(initial: List<Int>) {
     }
 }
 
-private fun Map<Int, Long>.value(key: Int) = this.getOrDefault(key, 0L)
+private fun Map<Int, Long>.value(key: Int) = getOrDefault(key, 0L)

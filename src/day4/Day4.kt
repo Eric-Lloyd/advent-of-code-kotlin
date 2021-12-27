@@ -1,9 +1,9 @@
 package day4
 
-import readInput
+import java.io.File
 
 fun main() {
-    val input = readInput("day4/Day4").filter { it.trimIndent().isNotBlank() }
+    val input = File("src", "day4/Day4.txt").readLines().filter { it.trimIndent().isNotBlank() }
     val numbers = input[0].split(",").map { it.toInt() }
     val boards = input
         .asSequence()
@@ -61,7 +61,7 @@ class Board(private val rows: List<Row>, var winner: Boolean = false) {
 
     fun score(number: Int): Int {
         rows.firstFilled()?.let { return (sumUnmarked) * number }
-        rows.toColumns().firstFilled()?.let { return (sumUnmarked) * number }
+        rows.columns().firstFilled()?.let { return (sumUnmarked) * number }
         return 0
     }
 
@@ -82,7 +82,7 @@ class Row(val tiles: List<Tile>) {
 
 fun List<Row>.firstFilled() = this.firstOrNull { it.isFilled() }
 
-fun List<Row>.toColumns(): List<Row> {
+fun List<Row>.columns(): List<Row> {
     val columns = mutableListOf<Row>()
     if (this.isEmpty()) return columns
 

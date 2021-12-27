@@ -1,10 +1,10 @@
 package day7
 
-import readInput
+import java.io.File
 import kotlin.math.abs
 
 fun main() {
-    val input = readInput("day7/Day7")[0].split(",").map { it.toInt() }
+    val input = File("src", "day7/Day7.txt").readLines()[0].split(",").map { it.toInt() }
     val count1 = minimalMovesCount(input) { n -> n }
     val count1v2 = minimalMovesCountIdiomatic(input) { n -> n }
     val count2 = minimalMovesCount(input) { n -> sumConsecutiveNumbers(n) }
@@ -39,5 +39,5 @@ fun minimalMovesCountIdiomatic(positions: List<Int>, cost: (Int) -> Int): Int {
         }.minOrZero()
 }
 
-fun List<Int>.minOrZero() = this.minOrNull() ?: 0
-fun List<Int>.maxOrZero() = this.maxOrNull() ?: 0
+fun List<Int>.minOrZero() = minOrNull() ?: 0
+fun List<Int>.maxOrZero() = maxOrNull() ?: 0

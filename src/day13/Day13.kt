@@ -1,9 +1,9 @@
 package day13
 
-import readInput
+import java.io.File
 
 fun main() {
-    val input = readInput("day13/Day13")
+    val input = File("src", "day13/Day13.txt").readLines()
     val emptyLineIndex = input.indexOfFirst { it.isBlank() }
 
     val coordinates = input.subList(0, emptyLineIndex)
@@ -17,13 +17,11 @@ fun main() {
     }.prettyPrint()
 }
 
-private fun String.toCoordinate() = this
-    .split(",")
+private fun String.toCoordinate() = split(",")
     .map { it.toInt() }
     .let { (x, y) -> Pair(x, y) }
 
-private fun String.toFold() = this
-    .replace("fold along ", "")
+private fun String.toFold() = replace("fold along ", "")
     .split("=")
     .let { (axis, value) -> Pair(Axis.from(axis), value.toInt()) }
 
@@ -78,11 +76,11 @@ fun List<List<Boolean>>.foldOn(axis: Axis, value: Int): List<List<Boolean>> {
     }
 }
 
-private fun List<Boolean>.merge(other: List<Boolean>) = this.mapIndexed { index, b -> b || other[index] }
+private fun List<Boolean>.merge(other: List<Boolean>) = mapIndexed { index, b -> b || other[index] }
 
-private fun List<List<Boolean>>.count() = this.flatten().count { it }
+private fun List<List<Boolean>>.count() = flatten().count { it }
 
-fun List<List<Boolean>>.prettyPrint() = this.forEach { line ->
+fun List<List<Boolean>>.prettyPrint() = forEach { line ->
     line.forEach { elem -> if (elem) print("#") else print(" ") }.also { print("\n") }
 }
 

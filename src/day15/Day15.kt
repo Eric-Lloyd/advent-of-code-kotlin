@@ -1,9 +1,9 @@
 package day15
 
-import readInput
+import java.io.File
 
 fun main() {
-    val matrix = readInput("day15/Day15")
+    val matrix = File("src", "day15/Day15.txt").readLines()
         .map { line -> line.toList().map { char -> char.toString().toInt() } }
 
     // part 1

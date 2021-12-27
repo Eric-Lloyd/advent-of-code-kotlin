@@ -1,9 +1,9 @@
 package day11
 
-import readInput
+import java.io.File
 
 fun main() {
-    val input = readInput("day11/Day11")
+    val input = File("src", "day11/Day11.txt").readLines()
         .map { line -> line.toList().map { it.toString().toInt() } }
 
     val counts = countFlashesAfterEachStepUntil(input) { step, flashCount -> step >= 100 && flashCount == 100 }

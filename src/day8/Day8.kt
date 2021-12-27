@@ -1,9 +1,9 @@
 package day8
 
-import readInput
+import java.io.File
 
 fun main() {
-    val input = readInput("day8/Day8")
+    val input = File("src", "day8/Day8.txt").readLines()
     val count1 = input
         .flatMap { it.split(" | ")[1].split(" ") }
         .count { it.length in UNIQUE_NUMBER_OF_SEGMENTS }
@@ -50,8 +50,9 @@ fun outputValue(left: List<String>, right: List<String>): Int {
 }
 
 
-fun String.containsChars(other: String) = other.all { this.contains(it) }
+fun String.containsChars(other: String) = other.all { contains(it) }
 
-fun String.containsExactlyInAnyOrder(other: String) = this.length == other.length &&
-            this.all { contains(it) } &&
-            other.all { this.contains(it) }
+fun String.containsExactlyInAnyOrder(other: String) =
+    length == other.length &&
+            all { contains(it) } &&
+            other.all { contains(it) }

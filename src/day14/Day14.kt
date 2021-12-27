@@ -1,9 +1,9 @@
 package day14
 
-import readInput
+import java.io.File
 
 fun main() {
-    val input = readInput("day14/Day14")
+    val input = File("src", "day14/Day14.txt").readLines()
 
     val template = input[0]
     val rules = input

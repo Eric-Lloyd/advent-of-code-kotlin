@@ -1,10 +1,10 @@
 package day5
 
-import readInput
+import java.io.File
 import kotlin.math.abs
 
 fun main() {
-    val lines = readInput("day5/Day5")
+    val lines = File("src", "day5/Day5.txt").readLines()
         .map { lineFrom(it) }
     val count1 = count(lines) { line -> line.isVertical || line.isHorizontal }
     val count2 = count(lines) { line -> line.isVertical || line.isHorizontal || line.isDiagonal }
